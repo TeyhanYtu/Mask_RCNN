@@ -75,7 +75,8 @@ class CCPConfig(Config):
     # few objects. Aim to allow ROI sampling to pick 33% positive ROIs.
 
     # Use a small epoch since the data is simple
-    STEPS_PER_EPOCH = 100
+    STEPS_PER_EPOCH = 225
+    RPN_ANCHOR_SCALES = (16, 32, 64, 128, 256)
 
     # use small validation steps since the epoch is small
 
@@ -84,7 +85,7 @@ class CCPConfig(Config):
 
 
     # Skip detections with < 90% confidence
-    DETECTION_MIN_CONFIDENCE = 0.9
+    DETECTION_MIN_CONFIDENCE = 0.8
 
 
 ############################################################
@@ -93,29 +94,17 @@ class CCPConfig(Config):
 
 class CCPDataset(utils.Dataset):
 
-    def load_ccp(self, dataset_dir):
+    def load_ccp(self, dataset_dir, trainVal):
         """Load a subset of the Balloon dataset.
         dataset_dir: Root directory of the dataset.
         subset: Subset to load: train or val
         """
         # Add classes. We have 58 classes to add.
         #todo: dataset_dir  ve ğathler düzenlenecek
-        buket_path_load_mat = 'C:\\Users\\bbuke\\OneDrive\\Masaüstü\\ip\\co-parsing\\clothing-co-parsing-master\\label_list.mat'
-        buket_path_path = "C:\\Users\\bbuke\\OneDrive\\Masaüstü\\ip\\co-parsing\\clothing-co-parsing-master\\annotations\\pixel-level\\"
-        buket_path_images_path = "C:\\Users\\bbuke\\OneDrive\\Masaüstü\\ip\\co-parsing\\clothing-co-parsing-master\\photos\\"
 
-        teyhan_path_load_mat = "/Users/teyhanuslu/Documents/Anaconda/PROJE/clothing-co-parsing-master/label_list.mat"
-        teyhan_path_path = "/Users/teyhanuslu/Documents/Anaconda/PROJE/clothing-co-parsing-master/annotations/pixel-level/"
-        teyhan_path_images_path = "/Users/teyhanuslu/Documents/Anaconda/PROJE/clothing-co-parsing-master/photos/"
-        
-        if False:
-            load_mat = teyhan_path_load_mat
-            path = teyhan_path_path + dataset_dir + "/"
-            imagesPath = teyhan_path_images_path + dataset_dir + "/"
-        else:
-            load_mat = buket_path_load_mat
-            path = buket_path_path + dataset_dir + "\\"
-            imagesPath = buket_path_images_path + dataset_dir + "\\"
+        load_mat = dataset_dir
+        path = dataset_dir + "annotations/pixel-level/" + trainVal + "/"
+        imagesPath = dataset_dir + "photos/" + trainVal + "/"
             
         labels = []
         mat = scipy.io.loadmat(load_mat)
@@ -229,12 +218,12 @@ def train(model):
     """Train the model."""
     # Training dataset.
     dataset_train = CCPDataset()
-    dataset_train.load_balloon(args.dataset, "train")
+    dataset_train.load_ccp(args.dataset, "train")
     dataset_train.prepare()
 
     # Validation dataset
     dataset_val = CCPDataset()
-    dataset_val.load_balloon(args.dataset, "val")
+    dataset_val.load_ccp(args.dataset, "val")
     dataset_val.prepare()
 
     # *** This training schedule is an example. Update to your needs ***
@@ -244,8 +233,8 @@ def train(model):
     print("Training network heads")
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=30,
-                layers='heads')
+                epochs=40,
+                layers='all')
 
 
 def color_splash(image, mask):
@@ -329,7 +318,7 @@ if __name__ == '__main__':
 
     # Parse command line arguments
     parser = argparse.ArgumentParser(
-        description='Train Mask R-CNN to detect balloons.')
+        description='Train Mask R-CNN to detect clothes.')
     parser.add_argument("command",
                         metavar="<command>",
                         help="'train' or 'splash'")
