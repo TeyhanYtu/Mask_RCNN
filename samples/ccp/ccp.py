@@ -76,7 +76,7 @@ class CCPConfig(Config):
     # few objects. Aim to allow ROI sampling to pick 33% positive ROIs.
 
     # Use a small epoch since the data is simple
-    STEPS_PER_EPOCH = 225
+    STEPS_PER_EPOCH = 40
     RPN_ANCHOR_SCALES = (16, 32, 64, 128, 256)
 
     # use small validation steps since the epoch is small
@@ -234,8 +234,8 @@ def train(model):
     print("Training network heads")
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=40,
-                layers='all')
+                epochs=1,
+                layers='head')
 
 
 def color_splash(image, mask):
