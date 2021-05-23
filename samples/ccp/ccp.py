@@ -66,7 +66,7 @@ class CCPConfig(Config):
 
     # We use a GPU with 12GB memory, which can fit two images.
     # Adjust down if you use a smaller GPU.
-    IMAGES_PER_GPU = 1
+    IMAGES_PER_GPU = 2
     GPU_COUNT = 1
     # Use small images for faster training. Set the limits of the small side
     # the large side, and that determines the image shape.
@@ -103,7 +103,7 @@ class CCPDataset(utils.Dataset):
         # Add classes. We have 58 classes to add.
         #todo: dataset_dir  ve ğathler düzenlenecek
 
-        load_mat = dataset_dir
+        load_mat = dataset_dir + "label_list.mat"
         path = dataset_dir + "annotations/pixel-level/" + trainVal + "/"
         imagesPath = dataset_dir + "photos/" + trainVal + "/"
             
