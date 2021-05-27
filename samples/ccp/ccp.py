@@ -30,6 +30,7 @@ Usage: import the module (see Jupyter notebooks for examples), or run from
 
 import os
 import sys
+sys.path.insert(0, os.getcwd())
 import datetime
 import numpy as np
 import skimage.draw
@@ -38,7 +39,7 @@ import matplotlib.pyplot as plt
 import glob
 
 # Root directory of the project
-ROOT_DIR = os.path.abspath("../../")
+ROOT_DIR = os.path.abspath("../")
 
 # Import Mask RCNN
 sys.path.append(ROOT_DIR)  # To find local version of the library
@@ -231,7 +232,7 @@ def train(model):
     # Since we're using a very small dataset, and starting from
     # COCO trained weights, we don't need to train too long. Also,
     # no need to train all layers, just the heads should do it.
-    print("Training network heads")
+    print("Training network heads",flush=True)
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
                 epochs=40,
@@ -397,7 +398,7 @@ if __name__ == '__main__':
             "mrcnn_bbox", "mrcnn_mask"])
     else:
         model.load_weights(weights_path, by_name=True)
-
+    print("agırlıkları yükledim",flush=True)
     # Train or evaluate
     if args.command == "train":
         train(model)

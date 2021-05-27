@@ -1826,6 +1826,7 @@ class MaskRCNN(object):
         config: A Sub-class of the Config class
         model_dir: Directory to save training logs and trained weights
         """
+        print("training'e geldim",flush=True)
         assert mode in ['training', 'inference']
         self.mode = mode
         self.config = config
@@ -2066,7 +2067,7 @@ class MaskRCNN(object):
         if config.GPU_COUNT > 1:
             from mrcnn.parallel_model import ParallelModel
             model = ParallelModel(model, config.GPU_COUNT)
-
+        print("model hazır",flush=True)
         return model
 
     def find_last(self):
@@ -2304,7 +2305,7 @@ class MaskRCNN(object):
             defined in the Dataset class.
         """
         assert self.mode == "training", "Create model in training mode."
-
+        print("training'e başlıyorum",flush=True)
         # Pre-defined layer regular expressions
         layer_regex = {
             # all layers but the backbone
@@ -2323,7 +2324,7 @@ class MaskRCNN(object):
         train_generator = DataGenerator(train_dataset, self.config, shuffle=True,
                                          augmentation=augmentation)
         val_generator = DataGenerator(val_dataset, self.config, shuffle=True)
-
+        print("datageneratorler hazır",flush=True)
         # Create log_dir if it does not exist
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir)
@@ -2353,7 +2354,7 @@ class MaskRCNN(object):
             workers = 0
         else:
             workers = multiprocessing.cpu_count()
-
+        print("training'e başlıyorum",flush=True)
         self.keras_model.fit(
             train_generator,
             initial_epoch=self.epoch,
@@ -2365,6 +2366,7 @@ class MaskRCNN(object):
             max_queue_size=100,
             workers=workers,
             use_multiprocessing=workers > 1,
+            verbose=1,
         )
         self.epoch = max(self.epoch, epochs)
 
