@@ -53,6 +53,13 @@ COCO_WEIGHTS_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
 # through the command line argument --logs
 DEFAULT_LOGS_DIR = os.path.join(ROOT_DIR, "logs")
 
+os.environ["CUDA_VISIBLE_DEVICES"] = '0'
+gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=per_process_gpu_memory)
+cfg = tf.compat.v1.ConfigProto(gpu_options=gpu_options, allow_soft_placement=True)  
+sess = tf.compat.v1.Session(config=cfg)
+K.set_session(sess)
+
+
 ############################################################
 #  Configurations
 ############################################################
